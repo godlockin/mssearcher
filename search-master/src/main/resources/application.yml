@@ -1,0 +1,50 @@
+app:
+  id: search-master
+
+apollo:
+  # Apollo Meta Server 地址
+  meta: http://apollo-config-test.aigauss.com:8080
+  # 自定义本地配置文件缓存路径
+  cacheDir: ./config_cache
+  # 设置在应用启动阶段就加载 Apollo 配置
+  autoUpdateInjectedSpringProperties: true
+  bootstrap:
+    enabled: true
+    eagerLoad: true
+    # 注入 application namespace
+    namespaces: application
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: search-master
+  profiles:
+    active: prd
+  main:
+    allow-bean-definition-overriding: true
+
+threadPool:
+  maxPoolSize: 1024
+  corePoolSize: 50
+  queueCapacity: 20
+  keepAliveSeconds: 20
+  weitForTasksToCompleteOnShutdown: true
+
+http:
+  maxTotal: 100
+  retryLimit: 3
+  socketTimeout: 10000
+  connectTimeout: 1000
+  defaultMaxPerRoute: 20
+  connectionRequestTimeout: 1500
+  staleConnectionCheckEnabled: true
+
+logging:
+  config: classpath:logback-spring.xml
+  pattern:
+    dateformat: yyyyMMdd HH:mm:ss:SSS
+    level: info
+  file:
+    path: ./logs

@@ -1,0 +1,28 @@
+# 本文件为测试环境配置文件
+
+# 实例副本数
+replicaCount: 1
+
+# host 为访问地址，序根据需求填写
+host: bulletin-worker-test.aigauss.com
+# 服务端口，根据程序暴露端口填写
+ports:
+  - containerPort: 8080
+
+# 是否走网关 nginx，无特殊情况尽量走网关
+ingress:
+  enabled: true
+
+# 实例资源使用限制
+resources:
+  limits:
+    cpu: 200m
+    memory: 200mi
+  requests:
+    cpu: 20m
+    memory: 200mi
+
+labels:
+  {}
+# health check 路径
+probePath: /
