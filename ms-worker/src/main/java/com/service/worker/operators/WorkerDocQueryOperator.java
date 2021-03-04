@@ -88,15 +88,19 @@ public abstract class WorkerDocQueryOperator extends WorkerSearchOperator {
 
     @Override
     protected Map<String, Object> doBuildParam(QueryRequest queryRequest) {
+        Map<String, Object> param = doBuildBaseParam(queryRequest);
+
+        Map<String, Object> query = doBuildQuery(queryRequest);
+        param.put(ESConfig.QUERY_KEY, query);
+
+        return param;
+    }
+
+    protected Map<String, Object> doBuildQuery(QueryRequest queryRequest) {
         WorkerCoreQuery coreQuery = queryRequest.getCoreQuery();
         String oriQuery = coreQuery.getQuery();
         List<String> querySegments = coreQuery.getQuerySegments();
         String combinedQuery = String.join(" ", querySegments);
-
-        Map<String, Object> param = new HashMap<>();
-        param.put(ESConfig.INDEX_KEY, esIndex());
-        param.put(ESConfig.FROM_KEY, 0);
-        param.put(ESConfig.SIZE_KEY, Math.max(coreQuery.getPageNo() * coreQuery.getPageSize(), 100));
 
         Map<String, Object> query = new HashMap<>();
         List<Map<String, Object>> must = new ArrayList<>();
@@ -107,8 +111,8 @@ public abstract class WorkerDocQueryOperator extends WorkerSearchOperator {
         docShould.add(buildConditionItem(ESConfig.MATCH_PHRASE_KEY, "title", oriQuery, 8D));
         docShould.add(buildConditionItem(ESConfig.MATCH_PHRASE_KEY, "titleSegs", combinedQuery, 5D));
 
-        docShould.add(buildConditionItem(ESConfig.MATCH_KEY, "keywords", combinedQuery, 3D));
-        docShould.add(buildConditionItem(ESConfig.MATCH_PHRASE_KEY, "keywords", combinedQuery, 5D));
+        docShould.add(buildConditionItem(ESConfig.MATCH_KEY, "content", combinedQuery, 3D));
+        docShould.add(buildConditionItem(ESConfig.MATCH_PHRASE_KEY, "content", combinedQuery, 5D));
 
         coreQuery.getStockList().forEach(stockInfo -> docShould.add(buildConditionItem(ESConfig.MATCH_KEY, "stockCodes", stockInfo.getCode(), 15D)));
         coreQuery.getProjectList().forEach(projectInfo -> docShould.add(buildConditionItem(ESConfig.MATCH_KEY, "projects", projectInfo.getId(), 15D)));
@@ -116,8 +120,15 @@ public abstract class WorkerDocQueryOperator extends WorkerSearchOperator {
         docMatch.put(ESConfig.SHOULD_KEY, docShould);
         must.add(docMatch);
         query.put(ESConfig.MUST_KEY, must);
-        param.put(ESConfig.QUERY_KEY, query);
+        return query;
+    }
 
+    protected Map<String, Object> doBuildBaseParam(QueryRequest queryRequest) {
+        WorkerCoreQuery coreQuery = queryRequest.getCoreQuery();
+        Map<String, Object> param = new HashMap<>();
+        param.put(ESConfig.INDEX_KEY, esIndex());
+        param.put(ESConfig.FROM_KEY, 0);
+        param.put(ESConfig.SIZE_KEY, Math.max(coreQuery.getPageNo() * coreQuery.getPageSize(), 100));
         return param;
     }
 

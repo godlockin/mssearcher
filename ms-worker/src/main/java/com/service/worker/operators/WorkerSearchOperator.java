@@ -104,7 +104,7 @@ public abstract class WorkerSearchOperator extends AbstractWorkerCacheAbleServic
             double decayWeight = workerTimeDecay / (Math.exp(quarterDiff - 4) + 1) + (1 - workerTimeDecay);
             double oriScore = docItem.getOriScore();
             double finalScore = oriScore * decayWeight;
-            log.info("Use sigmoid decay on [{}], got weight:[{}], original score:[{}] final score:[{}], original data:[{}]"
+            log.debug("Use sigmoid decay on [{}], got weight:[{}], original score:[{}] final score:[{}], original data:[{}]"
                     , handlerKey()
                     , decayWeight
                     , oriScore
@@ -126,7 +126,7 @@ public abstract class WorkerSearchOperator extends AbstractWorkerCacheAbleServic
             double decayWeight = workerTimeDecay / (weekDiff + 1) + (1 - workerTimeDecay);
             double oriScore = docItem.getOriScore();
             double finalScore = oriScore * decayWeight;
-            log.info("Use hyperbolic decay on [{}], got weight:[{}], original score:[{}] final score:[{}], original data:[{}]"
+            log.debug("Use hyperbolic decay on [{}], got weight:[{}], original score:[{}] final score:[{}], original data:[{}]"
                     , handlerKey()
                     , decayWeight
                     , oriScore
@@ -143,7 +143,7 @@ public abstract class WorkerSearchOperator extends AbstractWorkerCacheAbleServic
             double decayWeight = workerTimeDecayRate();
             double oriScore = docItem.getOriScore();
             double finalScore = oriScore * decayWeight;
-            log.info("Use uniform decay on [{}], got weight:[{}], original score:[{}] final score:[{}], original data:[{}]"
+            log.debug("Use uniform decay on [{}], got weight:[{}], original score:[{}] final score:[{}], original data:[{}]"
                     , handlerKey()
                     , decayWeight
                     , oriScore
@@ -159,7 +159,7 @@ public abstract class WorkerSearchOperator extends AbstractWorkerCacheAbleServic
             double decayWeight = confidence();
             double oriScore = docItem.getOriScore();
             double finalScore = oriScore * decayWeight;
-            log.info("Use default decay on [{}], got weight:[{}], original score:[{}] final score:[{}], original data:[{}]"
+            log.debug("Use default decay on [{}], got weight:[{}], original score:[{}] final score:[{}], original data:[{}]"
                     , handlerKey()
                     , decayWeight
                     , oriScore

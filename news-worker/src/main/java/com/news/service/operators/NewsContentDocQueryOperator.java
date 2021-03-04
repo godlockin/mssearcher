@@ -1,9 +1,12 @@
 package com.news.service.operators;
 
 import com.common.SysConfigUtil;
+import com.common.constants.Constants.ESConfig;
 import com.common.datasource.ESClient;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.model.DocItem;
+import com.model.input.QueryRequest;
+import com.model.input.WorkerCoreQuery;
 import com.service.worker.operators.WorkerDocQueryOperator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -11,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +56,32 @@ public class NewsContentDocQueryOperator extends WorkerDocQueryOperator {
     private ESClient esClient;
     private Cache<String, List<DocItem>> localCache;
     private Cache<String, List<DocItem>> redisCache;
+
+    @Override
+    protected Map<String, Object> doBuildQuery(QueryRequest queryRequest) {
+        WorkerCoreQuery coreQuery = queryRequest.getCoreQuery();
+        String oriQuery = coreQuery.getQuery();
+        List<String> querySegments = coreQuery.getQuerySegments();
+        String combinedQuery = String.join(" ", querySegments);
+
+        Map<String, Object> query = new HashMap<>();
+        List<Map<String, Object>> must = new ArrayList<>();
+        Map<String, Object> docMatch = new HashMap<>();
+        docMatch.put(ESConfig.TYPE_KEY, ESConfig.BOOL_KEY);
+        List<Map<String, Object>> docShould = new ArrayList<>();
+        docShould.add(buildConditionItem(ESConfig.MATCH_PHRASE_KEY, "title", oriQuery, 8D));
+        docShould.add(buildConditionItem(ESConfig.MATCH_PHRASE_KEY, "titleSegs", combinedQuery, 5D));
+
+        docShould.add(buildConditionItem(ESConfig.MATCH_PHRASE_KEY, "content", combinedQuery, 5D));
+
+        coreQuery.getStockList().forEach(stockInfo -> docShould.add(buildConditionItem(ESConfig.MATCH_KEY, "stockCodes", stockInfo.getCode(), 15D)));
+        coreQuery.getProjectList().forEach(projectInfo -> docShould.add(buildConditionItem(ESConfig.MATCH_KEY, "projects", projectInfo.getId(), 15D)));
+
+        docMatch.put(ESConfig.SHOULD_KEY, docShould);
+        must.add(docMatch);
+        query.put(ESConfig.MUST_KEY, must);
+        return query;
+    }
 
     @PostConstruct
     protected void init() {

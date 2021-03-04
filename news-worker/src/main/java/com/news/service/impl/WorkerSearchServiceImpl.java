@@ -1,5 +1,6 @@
 package com.news.service.impl;
 
+import com.common.utils.ExtraCollectionUtils;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.common.SysConfigUtil;
 import com.model.DocItem;
@@ -15,8 +16,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -39,6 +42,20 @@ public class WorkerSearchServiceImpl extends AbstractWorkerSearchService impleme
 
     @Autowired
     private WorkerQuServiceInterface quService;
+
+    protected ConcurrentMap<String, List<DocItem>> doBuildDocGroupsMap(Map<String, Object> queryResultMap) {
+        Set<String> distinct = ConcurrentHashMap.newKeySet();
+        return queryResultMap
+                .entrySet().parallelStream()
+                .filter(e -> e.getValue() instanceof List)
+                .map(e -> (List<DocItem>) e.getValue())
+                .filter(ExtraCollectionUtils::isNotEmpty)
+                .flatMap(Collection::stream)
+                .filter(docItem -> distinct.add(docItem.getFuncId()))
+                .filter(docItem -> distinct.add(docItem.getTitle()))
+                .sorted(Comparator.comparing(DocItem::getFinalScore).reversed())
+                .collect(Collectors.groupingByConcurrent(DocItem::getBundleKey));
+    }
 
     @Override
     protected Cache<String, List<DocItem>> localCache() {

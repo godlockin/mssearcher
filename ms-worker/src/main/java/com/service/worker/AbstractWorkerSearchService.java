@@ -115,8 +115,44 @@ public abstract class AbstractWorkerSearchService extends AbstractWorkerCacheAbl
     protected List<SortItem> doParseResult(QueryRequest queryRequest, Map<String, Object> queryResultMap) {
         int groupSize = queryRequest.getCoreQuery().getGroupSize();
 
+        ConcurrentMap<String, List<DocItem>> docGroups = doBuildDocGroupsMap(queryResultMap);
+        log.info("Got {} potential doc", docGroups.size());
+
+        List<SortItem> dataList = doAggDocs(groupSize, docGroups);
+
+        log.info("Built {} data in [{}]", dataList.size(), handlerKey());
+        return dataList;
+    }
+
+    protected List<SortItem> doAggDocs(int groupSize, ConcurrentMap<String, List<DocItem>> docGroups) {
+        return docGroups.entrySet().parallelStream()
+                    .map(e -> {
+                        AtomicBoolean probableMatch = new AtomicBoolean(false);
+                        double totalScore = e.getValue().stream()
+                                .peek(docItem -> {
+                                    if ("doc".equalsIgnoreCase(docItem.getDocType())) {
+                                        probableMatch.set(true);
+                                    }
+                                })
+                                .mapToDouble(DocItem::getFinalScore)
+                                .sum();
+
+                        List<DocItem> docItems = DataUtils.handlePaging(0, groupSize, e.getValue());
+                        return SortItem.builder()
+                                .dataType(SysConfigUtil.getAsString("ServiceInstance", "INSTANCE_KEY", INSTANCE_KEY))
+                                .probablyMatch(probableMatch.get())
+                                .title(docItems.get(0).getTitle())
+                                .bundleKey(e.getKey())
+                                .dataList(docItems)
+                                .score(totalScore)
+                                .build();
+                    }).sorted(Comparator.comparing(SortItem::getScore).reversed())
+                    .collect(Collectors.toList());
+    }
+
+    protected ConcurrentMap<String, List<DocItem>> doBuildDocGroupsMap(Map<String, Object> queryResultMap) {
         Set<String> distinct = ConcurrentHashMap.newKeySet();
-        ConcurrentMap<String, List<DocItem>> docGroups = queryResultMap
+        return queryResultMap
                 .entrySet().parallelStream()
                 .filter(e -> e.getValue() instanceof List)
                 .map(e -> (List<DocItem>) e.getValue())
@@ -125,34 +161,6 @@ public abstract class AbstractWorkerSearchService extends AbstractWorkerCacheAbl
                 .filter(docItem -> distinct.add(docItem.getFuncId()))
                 .sorted(Comparator.comparing(DocItem::getFinalScore).reversed())
                 .collect(Collectors.groupingByConcurrent(DocItem::getBundleKey));
-        log.info("Got {} potential doc", docGroups.size());
-
-        List<SortItem> dataList = docGroups.entrySet().parallelStream()
-                .map(e -> {
-                    AtomicBoolean probableMatch = new AtomicBoolean(false);
-                    double totalScore = e.getValue().stream()
-                            .peek(docItem -> {
-                                if ("doc".equalsIgnoreCase(docItem.getDocType())) {
-                                    probableMatch.set(true);
-                                }
-                            })
-                            .mapToDouble(DocItem::getFinalScore)
-                            .sum();
-
-                    List<DocItem> docItems = DataUtils.handlePaging(0, groupSize, e.getValue());
-                    return SortItem.builder()
-                            .dataType(SysConfigUtil.getAsString("ServiceInstance", "INSTANCE_KEY", INSTANCE_KEY))
-                            .probablyMatch(probableMatch.get())
-                            .title(docItems.get(0).getTitle())
-                            .bundleKey(e.getKey())
-                            .dataList(docItems)
-                            .score(totalScore)
-                            .build();
-                }).sorted(Comparator.comparing(SortItem::getScore).reversed())
-                .collect(Collectors.toList());
-
-        log.info("Built {} data in [{}]", dataList.size(), handlerKey());
-        return dataList;
     }
 
     protected Predicate<String> redisCachePredicate() {
