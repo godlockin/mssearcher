@@ -77,7 +77,7 @@ public class DataUtils {
         }
 
         sentence = sentence
-                .replaceAll("\t|\r|\n", "")
+                .replaceAll("[\t\r\n]", "")
                 .replaceAll("^[　*| *| *|//s*]*", "")
                 .replaceAll("[　*| *| *|//s*]*$", "")
                 .trim();

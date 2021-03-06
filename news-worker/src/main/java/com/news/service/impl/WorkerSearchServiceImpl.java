@@ -1,6 +1,7 @@
 package com.news.service.impl;
 
 import com.common.SysConfigUtil;
+import com.common.utils.DataUtils;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.model.DocItem;
 import com.model.SortItem;
@@ -10,6 +11,7 @@ import com.service.worker.AbstractWorkerSearchService;
 import com.service.worker.operators.WorkerSearchOperator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -50,7 +52,11 @@ public class WorkerSearchServiceImpl extends AbstractWorkerSearchService impleme
         return docGroups.entrySet().parallelStream()
                 .map(docsConverter(groupSize))
                 .sorted(Comparator.comparing(SortItem::getScore).reversed())
-                .filter(item -> distinct.add(item.getTitle()))
+                .filter(item -> {
+                    String title = item.getTitle().replaceAll("[^a-zA-Z0-9\u4E00-\u9FA5]", "");
+                    title = DataUtils.removeUselessWhiteSpace(title);
+                    return StringUtils.isNotBlank(title) && distinct.add(title);
+                })
                 .collect(Collectors.toList());
     }
 
