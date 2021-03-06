@@ -1,12 +1,11 @@
 package com.news.service.impl;
 
-import com.common.utils.ExtraCollectionUtils;
-import com.github.benmanes.caffeine.cache.Cache;
 import com.common.SysConfigUtil;
+import com.github.benmanes.caffeine.cache.Cache;
 import com.model.DocItem;
 import com.model.SortItem;
-import com.service.WorkerSearchServiceInterface;
 import com.service.WorkerQuServiceInterface;
+import com.service.WorkerSearchServiceInterface;
 import com.service.worker.AbstractWorkerSearchService;
 import com.service.worker.operators.WorkerSearchOperator;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
@@ -43,18 +45,13 @@ public class WorkerSearchServiceImpl extends AbstractWorkerSearchService impleme
     @Autowired
     private WorkerQuServiceInterface quService;
 
-    protected ConcurrentMap<String, List<DocItem>> doBuildDocGroupsMap(Map<String, Object> queryResultMap) {
+    protected List<SortItem> doAggDocs(int groupSize, ConcurrentMap<String, List<DocItem>> docGroups) {
         Set<String> distinct = ConcurrentHashMap.newKeySet();
-        return queryResultMap
-                .entrySet().parallelStream()
-                .filter(e -> e.getValue() instanceof List)
-                .map(e -> (List<DocItem>) e.getValue())
-                .filter(ExtraCollectionUtils::isNotEmpty)
-                .flatMap(Collection::stream)
-                .filter(docItem -> distinct.add(docItem.getFuncId()))
-                .filter(docItem -> distinct.add(docItem.getTitle()))
-                .sorted(Comparator.comparing(DocItem::getFinalScore).reversed())
-                .collect(Collectors.groupingByConcurrent(DocItem::getBundleKey));
+        return docGroups.entrySet().parallelStream()
+                .map(docsConverter(groupSize))
+                .sorted(Comparator.comparing(SortItem::getScore).reversed())
+                .filter(item -> distinct.add(item.getTitle()))
+                .collect(Collectors.toList());
     }
 
     @Override

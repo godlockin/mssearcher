@@ -1,4 +1,3 @@
-#syntax=harbor.aigauss.com/docker/dockerfile:experimental
 FROM harbor.aigauss.com/base-images/maven:3-jdk-8-slim as builder
 # 配置默认工作空间
 WORKDIR /app

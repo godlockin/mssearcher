@@ -126,34 +126,38 @@ public abstract class AbstractWorkerSearchService extends AbstractWorkerCacheAbl
 
     protected List<SortItem> doAggDocs(int groupSize, ConcurrentMap<String, List<DocItem>> docGroups) {
         return docGroups.entrySet().parallelStream()
-                    .map(e -> {
-                        AtomicBoolean probableMatch = new AtomicBoolean(false);
-                        double totalScore = e.getValue().stream()
-                                .peek(docItem -> {
-                                    if ("doc".equalsIgnoreCase(docItem.getDocType())) {
-                                        probableMatch.set(true);
-                                    }
-                                })
-                                .mapToDouble(DocItem::getFinalScore)
-                                .sum();
+                .map(docsConverter(groupSize))
+                .sorted(Comparator.comparing(SortItem::getScore).reversed())
+                .collect(Collectors.toList());
+    }
 
-                        List<DocItem> docItems = DataUtils.handlePaging(0, groupSize, e.getValue());
-                        return SortItem.builder()
-                                .dataType(SysConfigUtil.getAsString("ServiceInstance", "INSTANCE_KEY", INSTANCE_KEY))
-                                .probablyMatch(probableMatch.get())
-                                .title(docItems.get(0).getTitle())
-                                .bundleKey(e.getKey())
-                                .dataList(docItems)
-                                .score(totalScore)
-                                .build();
-                    }).sorted(Comparator.comparing(SortItem::getScore).reversed())
-                    .collect(Collectors.toList());
+    protected Function<Map.Entry<String, List<DocItem>>, SortItem> docsConverter(int groupSize) {
+        return e -> {
+            AtomicBoolean probableMatch = new AtomicBoolean(false);
+            double totalScore = e.getValue().stream()
+                    .peek(docItem -> {
+                        if ("doc".equalsIgnoreCase(docItem.getDocType())) {
+                            probableMatch.set(true);
+                        }
+                    })
+                    .mapToDouble(DocItem::getFinalScore)
+                    .sum();
+
+            List<DocItem> docItems = DataUtils.handlePaging(0, groupSize, e.getValue());
+            return SortItem.builder()
+                    .dataType(SysConfigUtil.getAsString("ServiceInstance", "INSTANCE_KEY", INSTANCE_KEY))
+                    .probablyMatch(probableMatch.get())
+                    .title(docItems.get(0).getTitle())
+                    .bundleKey(e.getKey())
+                    .dataList(docItems)
+                    .score(totalScore)
+                    .build();
+        };
     }
 
     protected ConcurrentMap<String, List<DocItem>> doBuildDocGroupsMap(Map<String, Object> queryResultMap) {
         Set<String> distinct = ConcurrentHashMap.newKeySet();
-        return queryResultMap
-                .entrySet().parallelStream()
+        return queryResultMap.entrySet().parallelStream()
                 .filter(e -> e.getValue() instanceof List)
                 .map(e -> (List<DocItem>) e.getValue())
                 .filter(ExtraCollectionUtils::isNotEmpty)
