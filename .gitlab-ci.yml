@@ -2,142 +2,176 @@
 include:
   - project: "infra/gitlab/gitlab-ci"
     ref: master
-    file: "deploy.yaml"
+    file: "java.yaml"
+
+build:maven:
+  extends: .maven
 
 # --------------------------------- #
 # search-master
 search-master:build:docker:test:
   extends: .build:docker:test
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: search-master
     PROJECT_NAME: search-master
 
 search-master:build:docker:master:tag:
   extends: .build:docker:master:tag
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: search-master
     PROJECT_NAME: search-master
 
 search-master:test:
   extends: .deploy:test
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: search-master
     PROJECT_NAME: search-master
-    K8S_CLUSTER: aliyun-prod
 
 search-master:production:
   extends: .deploy:production
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: search-master
     PROJECT_NAME: search-master
-    K8S_CLUSTER: aliyun-prod
 
 search-master:build:docker:uat:
   extends: .build:docker:uat
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: search-master
     PROJECT_NAME: search-master
 
 search-master:uat:
   extends: .deploy:uat
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: search-master
     PROJECT_NAME: search-master
-    K8S_CLUSTER: aliyun-prod
 
 # --------------------------------- #
 # bulletin-worker
 bulletin-search-worker:build:docker:test:
   extends: .build:docker:test
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: bulletin-worker
     PROJECT_NAME: bulletin-search-worker
 
 bulletin-search-worker:build:docker:master:tag:
   extends: .build:docker:master:tag
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: bulletin-worker
     PROJECT_NAME: bulletin-search-worker
 
 bulletin-search-worker:test:
   extends: .deploy:test
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: bulletin-worker
     PROJECT_NAME: bulletin-search-worker
-    K8S_CLUSTER: aliyun-prod
 
 bulletin-search-worker:production:
   extends: .deploy:production
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: bulletin-worker
     PROJECT_NAME: bulletin-search-worker
-    K8S_CLUSTER: aliyun-prod
 
 bulletin-search-worker:build:docker:uat:
   extends: .build:docker:uat
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: bulletin-worker
     PROJECT_NAME: bulletin-search-worker
 
 bulletin-search-worker:uat:
   extends: .deploy:uat
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: bulletin-worker
     PROJECT_NAME: bulletin-search-worker
-    K8S_CLUSTER: aliyun-prod
 
 # --------------------------------- #
 # earning-worker
 earning-search-worker:build:docker:test:
   extends: .build:docker:test
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: earning-worker
     PROJECT_NAME: earning-search-worker
 
 earning-search-worker:build:docker:uat:
   extends: .build:docker:uat
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: earning-worker
     PROJECT_NAME: earning-search-worker
 
 earning-search-worker:build:docker:master:tag:
   extends: .build:docker:master:tag
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: earning-worker
     PROJECT_NAME: earning-search-worker
 
 earning-search-worker:test:
   extends: .deploy:test
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: earning-worker
     PROJECT_NAME: earning-search-worker
-    K8S_CLUSTER: aliyun-prod
 
 earning-search-worker:uat:
   extends: .deploy:uat
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: earning-worker
     PROJECT_NAME: earning-search-worker
-    K8S_CLUSTER: aliyun-prod
 
 earning-search-worker:production:
   extends: .deploy:production
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: earning-worker
     PROJECT_NAME: earning-search-worker
-    K8S_CLUSTER: aliyun-prod
 
 # --------------------------------- #
 # news-worker
 news-search-worker:build:docker:test:
   extends: .build:docker:test
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: news-worker
     PROJECT_NAME: news-search-worker
 
 news-search-worker:build:docker:uat:
   extends: .build:docker:uat
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: news-worker
     PROJECT_NAME: news-search-worker
 
@@ -150,62 +184,73 @@ news-search-worker:build:docker:master:tag:
 news-search-worker:test:
   extends: .deploy:test
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: news-worker
     PROJECT_NAME: news-search-worker
-    K8S_CLUSTER: aliyun-prod
 
 news-search-worker:uat:
   extends: .deploy:uat
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: news-worker
     PROJECT_NAME: news-search-worker
-    K8S_CLUSTER: aliyun-prod
 
 news-search-worker:production:
   extends: .deploy:production
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: news-worker
     PROJECT_NAME: news-search-worker
-    K8S_CLUSTER: aliyun-prod
-
 
 # --------------------------------- #
 # research-worker
 research-search-worker:build:docker:test:
   extends: .build:docker:test
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: research-worker
     PROJECT_NAME: research-search-worker
 
 research-search-worker:build:docker:uat:
   extends: .build:docker:uat
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: research-worker
     PROJECT_NAME: research-search-worker
 
 research-search-worker:build:docker:master:tag:
   extends: .build:docker:master:tag
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: research-worker
     PROJECT_NAME: research-search-worker
 
 research-search-worker:test:
   extends: .deploy:test
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: research-worker
     PROJECT_NAME: research-search-worker
-    K8S_CLUSTER: aliyun-prod
 
 research-search-worker:uat:
   extends: .deploy:uat
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: research-worker
     PROJECT_NAME: research-search-worker
-    K8S_CLUSTER: aliyun-prod
 
 research-search-worker:production:
   extends: .deploy:production
   variables:
+    NAMESPACE: mainsearch
+    K8S_CLUSTER: aliyun-prod
     PROJECT_DIR: research-worker
     PROJECT_NAME: research-search-worker
-    K8S_CLUSTER: aliyun-prod
