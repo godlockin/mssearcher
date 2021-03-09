@@ -4,7 +4,7 @@
 replicaCount: 1
 
 # host 为访问地址，序根据需求填写
-host: earning-worker-prod.aigauss.com
+host: earning-search-worker-prod.aigauss.com
 # 服务端口，根据程序暴露端口填写
 ports:
   - containerPort: 8080

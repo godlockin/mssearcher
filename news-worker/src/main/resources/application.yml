@@ -1,5 +1,5 @@
 app:
-  id: news-worker
+  id: news-search-worker
 
 apollo:
   # Apollo Meta Server 地址
@@ -19,7 +19,7 @@ server:
 
 spring:
   application:
-    name: news-worker
+    name: news-search-worker
   profiles:
     active: prd
   main:

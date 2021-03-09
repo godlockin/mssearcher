@@ -1,5 +1,5 @@
 app:
-  id: earning-worker
+  id: earning-search-worker
 
 apollo:
   # Apollo Meta Server 地址
@@ -19,7 +19,7 @@ server:
 
 spring:
   application:
-    name: earning-worker
+    name: earning-search-worker
   profiles:
     active: prd
   main:

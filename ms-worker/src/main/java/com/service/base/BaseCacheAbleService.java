@@ -46,7 +46,7 @@ public abstract class BaseCacheAbleService<T, R> extends BaseService<T, R> imple
         String key = cacheKey(param);
         Cache<String, R> cacheInstance = getCache();
         Function<String, R> function = id -> fetchFunc(param);
-        if (ObjectUtils.isNotEmpty(cacheInstance)) {
+        if (ObjectUtils.isEmpty(cacheInstance)) {
             r = function.apply(key);
         } else {
             r = cacheInstance.get(key, function);
