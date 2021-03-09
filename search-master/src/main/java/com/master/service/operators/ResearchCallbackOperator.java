@@ -33,9 +33,9 @@ public class ResearchCallbackOperator extends WorkerCallbackOperator {
     private String REMOTE_URL;
     @Value("${RESEARCH_CALLBACK_RESULT_DATA_KEY:data}")
     private String RESULT_DATA_KEY;
-    @Value("${RESEARCH_CALLBACK_RESULT_DATA_KEY:1}")
+    @Value("${RESEARCH_CALLBACK_SS_CODE:1}")
     private String SS_CODE;
-    @Value("${RESEARCH_CALLBACK_RESULT_DATA_KEY:code}")
+    @Value("${RESEARCH_CALLBACK_SS_CODE_KEY:code}")
     private String SS_CODE_KEY;
 
     @Value("${RESEARCH_CALLBACK_CACHE_TYPE:REDIS}")

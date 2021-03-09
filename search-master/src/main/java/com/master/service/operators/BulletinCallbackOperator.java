@@ -33,9 +33,9 @@ public class BulletinCallbackOperator extends WorkerCallbackOperator {
     private String REMOTE_URL;
     @Value("${BULLETIN_CALLBACK_RESULT_DATA_KEY:data}")
     private String RESULT_DATA_KEY;
-    @Value("${BULLETIN_CALLBACK_RESULT_DATA_KEY:1}")
+    @Value("${BULLETIN_CALLBACK_SS_CODE:1}")
     private String SS_CODE;
-    @Value("${BULLETIN_CALLBACK_RESULT_DATA_KEY:code}")
+    @Value("${BULLETIN_CALLBACK_SS_CODE_KEY:code}")
     private String SS_CODE_KEY;
 
     @Value("${BULLETIN_CALLBACK_CACHE_TYPE:REDIS}")

@@ -33,9 +33,9 @@ public class NewsCallbackOperator extends WorkerCallbackOperator {
     private String REMOTE_URL;
     @Value("${NEWS_CALLBACK_RESULT_DATA_KEY:data}")
     private String RESULT_DATA_KEY;
-    @Value("${NEWS_CALLBACK_RESULT_DATA_KEY:1}")
+    @Value("${NEWS_CALLBACK_SS_CODE:1}")
     private String SS_CODE;
-    @Value("${NEWS_CALLBACK_RESULT_DATA_KEY:code}")
+    @Value("${NEWS_CALLBACK_SS_CODE_KEY:code}")
     private String SS_CODE_KEY;
 
     @Value("${NEWS_CALLBACK_CACHE_TYPE:REDIS}")
