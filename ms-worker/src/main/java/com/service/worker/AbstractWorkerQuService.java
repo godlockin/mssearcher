@@ -25,7 +25,7 @@ public abstract class AbstractWorkerQuService extends AbstractWorkerCacheAbleSer
 
     @Value("${SEARCH_WORKER_QU_HANDLER_KEY:GLOBAL_SEARCH_WORKER_QU}")
     private String HANDLER_KEY;
-    @Value("${SEARCH_WORKER_OPERATOR_ACTIVE:true}")
+    @Value("${SEARCH_WORKER_QU_OPERATOR_ACTIVE:true}")
     protected boolean OPERATOR_ACTIVE;
 
     @Value("${SEARCH_WORKER_QU_CONFIDENCE:1.0}")
