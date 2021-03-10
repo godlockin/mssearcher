@@ -3,7 +3,6 @@ package com.master.service.impl;
 import com.common.SysConfigUtil;
 import com.common.constants.Constants.ResultConfig;
 import com.common.utils.DataUtils;
-import com.master.service.QuService;
 import com.master.service.SearchMaster;
 import com.master.service.SearchService;
 import com.model.SortItem;
@@ -12,7 +11,6 @@ import com.model.input.WorkerCoreQuery;
 import com.model.output.QueryResult;
 import com.service.base.BaseService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,9 +36,6 @@ public class SearchMasterImpl extends BaseService<QueryRequest, QueryResult> imp
     private int TIMEOUT;
 
     @Autowired
-    private QuService quService;
-
-    @Autowired
     private SearchService searchService;
 
     public QueryResult defaultResult() {
@@ -49,8 +44,6 @@ public class SearchMasterImpl extends BaseService<QueryRequest, QueryResult> imp
 
     @Override
     protected Map<String, Object> doBuildParam(QueryRequest query) {
-        QueryRequest queryRequest = quService.handle(query.getCoreQuery());
-        BeanUtils.copyProperties(queryRequest, query);
         return Collections.emptyMap();
     }
 

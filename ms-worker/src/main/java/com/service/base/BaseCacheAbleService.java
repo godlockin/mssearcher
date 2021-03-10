@@ -67,10 +67,10 @@ public abstract class BaseCacheAbleService<T, R> extends BaseService<T, R> imple
     public <T> Cache<String, T> getCache() {
         cacheTypeEnum = CacheTypeEnum.parse(cacheType());
         switch (cacheTypeEnum) {
-            case REDIS:
+            case LOCAL:
                 return localCache();
 
-            case LOCAL:
+            case REDIS:
                 return redisCache();
 
             case NONE:
