@@ -50,6 +50,12 @@ public class NewsDocGetOperator extends WorkerDocGetOperator {
     private Cache<String, List<DocItem>> localCache;
     private Cache<String, List<DocItem>> redisCache;
 
+    protected DocItem docItemBuilder(Map<String, Object> map) {
+        DocItem docItem = super.docItemBuilder(map);
+        docItem.setDomain((String) map.getOrDefault("sourceName", ""));
+        return docItem;
+    }
+
     @PostConstruct
     protected void init() {
         super.init();

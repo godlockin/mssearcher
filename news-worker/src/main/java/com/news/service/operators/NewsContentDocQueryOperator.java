@@ -83,6 +83,12 @@ public class NewsContentDocQueryOperator extends WorkerDocQueryOperator {
         return query;
     }
 
+    protected DocItem docItemBuilder(Map<String, Object> map) {
+        DocItem docItem = super.docItemBuilder(map);
+        docItem.setDomain((String) map.getOrDefault("sourceName", ""));
+        return docItem;
+    }
+
     @PostConstruct
     protected void init() {
         super.init();
