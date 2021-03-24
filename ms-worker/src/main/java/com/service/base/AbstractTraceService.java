@@ -65,7 +65,7 @@ public abstract class AbstractTraceService implements TraceServiceInterface {
 
     public String updSysConfig(SysConfigBean configItem) {
 
-        String msg = "";
+        String msg = "System config is not able to be modify";
         if (CONFIG_ENABLE) {
             msg = configItemCheck(configItem);
             if (StringUtils.isBlank(msg)) {

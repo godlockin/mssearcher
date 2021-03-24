@@ -1,18 +1,27 @@
 package com.news.service.operators;
 
 import com.common.SysConfigUtil;
+import com.common.constants.Constants;
 import com.common.datasource.ESClient;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.model.DocItem;
+import com.model.input.QueryRequest;
+import com.model.input.WorkerCoreQuery;
+import com.news.common.NewsUtils;
 import com.service.worker.operators.WorkerDocGetOperator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 @Slf4j
 @Service
@@ -50,10 +59,39 @@ public class NewsDocGetOperator extends WorkerDocGetOperator {
     private Cache<String, List<DocItem>> localCache;
     private Cache<String, List<DocItem>> redisCache;
 
+    @Override
+    protected Map<String, Object> doBuildParam(QueryRequest queryRequest) {
+        WorkerCoreQuery coreQuery = queryRequest.getCoreQuery();
+        String oriQuery = coreQuery.getQuery();
+        List<String> querySegments = coreQuery.getQuerySegments();
+        String combinedQuery = String.join(" ", querySegments);
+
+        Map<String, Object> param = new HashMap<>();
+        param.put(Constants.ESConfig.INDEX_KEY, esIndex());
+        param.put(Constants.ESConfig.FROM_KEY, 0);
+        param.put(Constants.ESConfig.SIZE_KEY, 10);
+
+        Map<String, Object> query = new HashMap<>();
+        List<Map<String, Object>> must = new ArrayList<>();
+        Map<String, Object> docMatch = new HashMap<>();
+        docMatch.put(Constants.ESConfig.TYPE_KEY, Constants.ESConfig.BOOL_KEY);
+        List<Map<String, Object>> docShould = new ArrayList<>();
+        docShould.add(buildConditionItem(Constants.ESConfig.MATCH_PHRASE_KEY, "headline", oriQuery, 10D));
+        docShould.add(buildConditionItem(Constants.ESConfig.MATCH_PHRASE_PREFIX_KEY, "titleSegs", combinedQuery, 10D));
+        docMatch.put(Constants.ESConfig.SHOULD_KEY, docShould);
+        must.add(docMatch);
+        query.put(Constants.ESConfig.MUST_KEY, must);
+        param.put(Constants.ESConfig.QUERY_KEY, query);
+
+        return param;
+    }
+
+    protected BiFunction<QueryRequest, Map<String, Object>, Boolean> esDataFilter() {
+        return (queryRequest, map) -> NewsUtils.esDataJudgement(defaultScore(), map);
+    }
+
     protected DocItem docItemBuilder(Map<String, Object> map) {
-        DocItem docItem = super.docItemBuilder(map);
-        docItem.setDomain((String) map.getOrDefault("sourceName", ""));
-        return docItem;
+        return NewsUtils.docItemBuilder(dataType(), defaultScore(), map);
     }
 
     @PostConstruct

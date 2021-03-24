@@ -126,6 +126,7 @@ public abstract class AbstractWorkerSearchService extends AbstractWorkerCacheAbl
 
     protected List<SortItem> doAggDocs(int groupSize, ConcurrentMap<String, List<DocItem>> docGroups) {
         return docGroups.entrySet().parallelStream()
+                .filter(e -> ExtraCollectionUtils.isNotEmpty(e.getValue()))
                 .map(docsConverter(groupSize))
                 .sorted(Comparator.comparing(SortItem::getScore).reversed())
                 .collect(Collectors.toList());
@@ -133,8 +134,9 @@ public abstract class AbstractWorkerSearchService extends AbstractWorkerCacheAbl
 
     protected Function<Map.Entry<String, List<DocItem>>, SortItem> docsConverter(int groupSize) {
         return e -> {
+            List<DocItem> baseList = e.getValue();
             AtomicBoolean probableMatch = new AtomicBoolean(false);
-            double totalScore = e.getValue().stream()
+            double totalScore = baseList.stream()
                     .peek(docItem -> {
                         if ("doc".equalsIgnoreCase(docItem.getDocType())) {
                             probableMatch.set(true);
@@ -143,7 +145,7 @@ public abstract class AbstractWorkerSearchService extends AbstractWorkerCacheAbl
                     .mapToDouble(DocItem::getFinalScore)
                     .sum();
 
-            List<DocItem> docItems = DataUtils.handlePaging(0, groupSize, e.getValue());
+            List<DocItem> docItems = DataUtils.handlePaging(0, groupSize, baseList);
             return SortItem.builder()
                     .dataType(SysConfigUtil.getAsString("ServiceInstance", "INSTANCE_KEY", INSTANCE_KEY))
                     .probablyMatch(probableMatch.get())
