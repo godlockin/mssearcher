@@ -5,6 +5,7 @@ import com.common.constants.ResultEnum;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -124,6 +125,27 @@ public class DateUtils {
                 .apply(Optional.ofNullable(base).orElse(getZonedDateTime()), num);
     }
 
+    public static ZonedDateTime getZonedDateTimeFromTimestamp(long timestamp) {
+        return getZonedDateTimeFromTimestamp(timestamp, DEFAULT_ZONE_ID);
+    }
+
+    public static ZonedDateTime getZonedDateTimeFromTimestamp(long timestamp, String zoneId) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.of(zoneId));
+    }
+
+    public static String getFormattedZonedDateTimeFromTimestamp(long timestamp) {
+        return getFormattedZonedDateTimeFromTimestamp(timestamp, DEFAULT_ZONE_ID);
+    }
+
+    private static String getFormattedZonedDateTimeFromTimestamp(long timestamp, String zoneId) {
+        return getFormattedZonedDateTimeFromTimestamp(timestamp, DEFAULT_ZONE_ID, DEFAULT_DATE_FORMAT);
+    }
+
+    private static String getFormattedZonedDateTimeFromTimestamp(long timestamp, String zoneId, String dateFormat) {
+        ZonedDateTime zonedDateTime = getZonedDateTimeFromTimestamp(timestamp, zoneId);
+        return formatZonedDateTime(zonedDateTime, dateFormat);
+    }
+
     private static BiFunction<ZonedDateTime, Integer, ZonedDateTime> addYears() {
         return ZonedDateTime::plusYears;
     }
@@ -174,4 +196,5 @@ public class DateUtils {
         dateStr = 10 == dateStr.length() ? dateStr + " 00:00:00" : dateStr;
         return parseDate(dateStr);
     }
+
 }

@@ -85,36 +85,6 @@ public class NewsContentDocQueryOperator extends WorkerDocQueryOperator {
         return query;
     }
 
-    private Map<String, Object> buildQuery(String tagType, Object value, Double boost) {
-        Map<String, Object> param = new HashMap<>();
-        param.put(ESConfig.TYPE_KEY, ESConfig.BOOL_KEY);
-
-        List<Map<String, Object>> must = new ArrayList<>();
-        Map<String, Object> tagTypeMatch = new HashMap<>();
-        tagTypeMatch.put(ESConfig.TYPE_KEY, ESConfig.NESTED_KEY);
-        tagTypeMatch.put(ESConfig.PATH_KEY, "annotationList");
-        Map<String, Object> tagQuery = new HashMap<>();
-        tagQuery.put(ESConfig.TYPE_KEY, ESConfig.MATCH_KEY);
-        tagQuery.put(ESConfig.FIELD_KEY, "annotationList.uid");
-        tagQuery.put(ESConfig.VALUE_KEY, tagType);
-        tagTypeMatch.put(ESConfig.QUERY_KEY, tagQuery);
-        must.add(tagTypeMatch);
-
-        Map<String, Object> tagIdMatch = new HashMap<>();
-        tagIdMatch.put(ESConfig.TYPE_KEY, ESConfig.NESTED_KEY);
-        tagIdMatch.put(ESConfig.PATH_KEY, "annotationList.tagList");
-        Map<String, Object> tagIdQuery = new HashMap<>();
-        tagIdQuery.put(ESConfig.TYPE_KEY, ESConfig.MATCH_KEY);
-        tagIdQuery.put(ESConfig.FIELD_KEY, "annotationList.tagList.uid");
-        tagIdQuery.put(ESConfig.VALUE_KEY, value);
-        tagIdMatch.put(ESConfig.QUERY_KEY, tagIdQuery);
-        tagIdMatch.put(ESConfig.BOOST_KEY, boost);
-        must.add(tagIdMatch);
-        param.put(ESConfig.MUST_KEY, must);
-
-        return param;
-    }
-
     protected BiFunction<QueryRequest, Map<String, Object>, Boolean> esDataFilter() {
         return (queryRequest, map) -> NewsUtils.esDataJudgement(defaultScore(), map);
     }

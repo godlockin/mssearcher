@@ -1,7 +1,7 @@
 package com.news.service.operators;
 
 import com.common.SysConfigUtil;
-import com.common.constants.Constants;
+import com.common.constants.Constants.ESConfig;
 import com.common.datasource.ESClient;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.model.DocItem;
@@ -11,10 +11,8 @@ import com.news.common.NewsUtils;
 import com.service.worker.operators.WorkerDocGetOperator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -67,21 +65,21 @@ public class NewsDocGetOperator extends WorkerDocGetOperator {
         String combinedQuery = String.join(" ", querySegments);
 
         Map<String, Object> param = new HashMap<>();
-        param.put(Constants.ESConfig.INDEX_KEY, esIndex());
-        param.put(Constants.ESConfig.FROM_KEY, 0);
-        param.put(Constants.ESConfig.SIZE_KEY, 10);
+        param.put(ESConfig.INDEX_KEY, esIndex());
+        param.put(ESConfig.FROM_KEY, 0);
+        param.put(ESConfig.SIZE_KEY, 10);
 
         Map<String, Object> query = new HashMap<>();
         List<Map<String, Object>> must = new ArrayList<>();
         Map<String, Object> docMatch = new HashMap<>();
-        docMatch.put(Constants.ESConfig.TYPE_KEY, Constants.ESConfig.BOOL_KEY);
+        docMatch.put(ESConfig.TYPE_KEY, ESConfig.BOOL_KEY);
         List<Map<String, Object>> docShould = new ArrayList<>();
-        docShould.add(buildConditionItem(Constants.ESConfig.MATCH_PHRASE_KEY, "headline", oriQuery, 10D));
-        docShould.add(buildConditionItem(Constants.ESConfig.MATCH_PHRASE_PREFIX_KEY, "titleSegs", combinedQuery, 10D));
-        docMatch.put(Constants.ESConfig.SHOULD_KEY, docShould);
+        docShould.add(buildConditionItem(ESConfig.MATCH_PHRASE_KEY, "headline", oriQuery, 10D));
+        docShould.add(buildConditionItem(ESConfig.MATCH_PHRASE_PREFIX_KEY, "titleSegs", combinedQuery, 10D));
+        docMatch.put(ESConfig.SHOULD_KEY, docShould);
         must.add(docMatch);
-        query.put(Constants.ESConfig.MUST_KEY, must);
-        param.put(Constants.ESConfig.QUERY_KEY, query);
+        query.put(ESConfig.MUST_KEY, must);
+        param.put(ESConfig.QUERY_KEY, query);
 
         return param;
     }
