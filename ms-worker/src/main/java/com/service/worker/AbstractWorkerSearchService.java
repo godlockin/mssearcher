@@ -164,8 +164,8 @@ public abstract class AbstractWorkerSearchService extends AbstractWorkerCacheAbl
                 .map(e -> (List<DocItem>) e.getValue())
                 .filter(ExtraCollectionUtils::isNotEmpty)
                 .flatMap(Collection::stream)
-                .filter(docItem -> distinct.add(docItem.getFuncId()))
                 .sorted(Comparator.comparing(DocItem::getFinalScore).reversed())
+                .filter(docItem -> distinct.add(docItem.getFuncId()))
                 .collect(Collectors.groupingByConcurrent(DocItem::getBundleKey));
     }
 
