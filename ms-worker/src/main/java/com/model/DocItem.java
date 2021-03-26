@@ -86,4 +86,9 @@ public class DocItem {
      */
     private String content;
 
+    public DocItem(DocItem docItem) {
+        this.title = docItem.getTitle();
+        this.bundleKey = docItem.getBundleKey();
+        this.publishDate = docItem.getPublishDate();
+    }
 }

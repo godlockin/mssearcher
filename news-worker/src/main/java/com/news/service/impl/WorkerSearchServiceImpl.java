@@ -130,6 +130,7 @@ public class WorkerSearchServiceImpl extends AbstractWorkerSearchService impleme
             }
 
             docItem.setBundleKey(basic.getString("uuid"));
+            docItem.setFuncId(json.get("id").toString());
 
             docItem.setTitle(content.getString("headline"));
             String summary = content.getString("summary");
@@ -179,11 +180,10 @@ public class WorkerSearchServiceImpl extends AbstractWorkerSearchService impleme
                         if ("doc".equalsIgnoreCase(docItem.getDocType())) {
                             probableMatch.set(true);
                         }
+
                         String funcId = docItem.getBundleKey();
-                        DocItem data = docMap.get(funcId);
-                        if (ObjectUtils.isNotEmpty(data)) {
-                            tmpList.add(data);
-                        }
+                        DocItem data = docMap.getOrDefault(funcId, new DocItem(docItem));
+                        tmpList.add(data);
                     })
                     .mapToDouble(DocItem::getFinalScore)
                     .sum();
