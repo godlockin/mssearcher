@@ -40,7 +40,7 @@ public class QuServiceImpl extends BaseCacheAbleService<CoreQuery, QueryRequest>
 
     @Value("${SEARCH_MASTER_QU_REMOTE_URL:http://internalapi.aigauss.com/baymaxentity/api/entities}")
     private String REMOTE_URL;
-    @Value("${SEARCH_MASTER_QU_TARGET_ITEM_KEY:segment,stock,pm_project}")
+    @Value("${SEARCH_MASTER_QU_TARGET_ITEM_KEY:segment,stock,pm_project,person,pm_org}")
     private String TARGET_ITEM_KEY;
 
     @Value("${SEARCH_MASTER_QU_CACHE_TYPE:REDIS}")
@@ -221,8 +221,7 @@ public class QuServiceImpl extends BaseCacheAbleService<CoreQuery, QueryRequest>
                                 .market(market)
                                 .stockId(stockId)
                                 .build();
-                    }).filter(item -> 0 < item.getId()
-                            && StringUtils.isNoneBlank(item.getCode(), item.getMarket()))
+                    }).filter(item -> 0 < item.getId() && StringUtils.isNoneBlank(item.getCode(), item.getMarket()))
                     .collect(Collectors.toList());
             coreQuery.setStockList(stockInfo);
         };
@@ -242,10 +241,48 @@ public class QuServiceImpl extends BaseCacheAbleService<CoreQuery, QueryRequest>
                                         .name(name)
                                         .build();
                             }
-                    ).filter(item -> 0 < item.getId()
-                            && StringUtils.isNoneBlank(item.getCode(), item.getName()))
+                    ).filter(item -> 0 < item.getId() && StringUtils.isNoneBlank(item.getCode(), item.getName()))
                     .collect(Collectors.toList());
             coreQuery.setProjectList(projectInfo);
+        };
+    }
+
+    private BiConsumer<WorkerCoreQuery, Map<String, Object>> personConsumer() {
+        return (coreQuery, map) -> {
+            List<Map<String, Object>> list = (List<Map<String, Object>>) map.getOrDefault("pm_project", new ArrayList<>());
+            List<PersonInfo> personList = list.stream()
+                    .map(item -> {
+                                int id = (Integer) item.getOrDefault("id", -1);
+                                String name = (String) item.getOrDefault("name", "NA");
+                                return PersonInfo.builder()
+                                        .id(id)
+                                        .name(name)
+                                        .build();
+                            }
+                    ).filter(item -> 0 < item.getId()
+                            && StringUtils.isNotBlank(item.getName()))
+                    .collect(Collectors.toList());
+            coreQuery.setPersonList(personList);
+        };
+    }
+
+    private BiConsumer<WorkerCoreQuery, Map<String, Object>> orgConsumer() {
+        return (coreQuery, map) -> {
+            List<Map<String, Object>> list = (List<Map<String, Object>>) map.getOrDefault("pm_project", new ArrayList<>());
+            List<OrgInfo> orgList = list.stream()
+                    .map(item -> {
+                                int id = (Integer) item.getOrDefault("id", -1);
+                                String code = (String) item.getOrDefault("code", "NA");
+                                String name = (String) item.getOrDefault("name", "NA");
+                                return OrgInfo.builder()
+                                        .id(id)
+                                        .code(code)
+                                        .name(name)
+                                        .build();
+                            }
+                    ).filter(item -> 0 < item.getId() && StringUtils.isNoneBlank(item.getCode(), item.getName()))
+                    .collect(Collectors.toList());
+            coreQuery.setOrgList(orgList);
         };
     }
 
@@ -312,6 +349,8 @@ public class QuServiceImpl extends BaseCacheAbleService<CoreQuery, QueryRequest>
         quOperators.put("stock", stockConsumer());
         quOperators.put("segment", segmentConsumer());
         quOperators.put("pm_project", projectConsumer());
+        quOperators.put("person", personConsumer());
+        quOperators.put("pm_org", orgConsumer());
     }
 
 }

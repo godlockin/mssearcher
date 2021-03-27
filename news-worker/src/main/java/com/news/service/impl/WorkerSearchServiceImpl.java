@@ -85,8 +85,8 @@ public class WorkerSearchServiceImpl extends AbstractWorkerSearchService impleme
 
     /**
      * do find all the doc
-     * @param idList
-     * @return
+     * @param idList for all docs
+     * @return docs' mapping, id -> doc info
      */
     private Map<String, DocItem> findDocDetails(List<String> idList) {
         Map<String, Object> query = new HashMap<>();
