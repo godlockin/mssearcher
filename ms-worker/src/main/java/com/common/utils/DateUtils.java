@@ -4,6 +4,7 @@ import com.exception.MsWorkerException;
 import com.common.constants.ResultEnum;
 import org.apache.commons.lang3.StringUtils;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -144,6 +145,18 @@ public class DateUtils {
     private static String getFormattedZonedDateTimeFromTimestamp(long timestamp, String zoneId, String dateFormat) {
         ZonedDateTime zonedDateTime = getZonedDateTimeFromTimestamp(timestamp, zoneId);
         return formatZonedDateTime(zonedDateTime, dateFormat);
+    }
+
+    public static long getMillisTime(ZonedDateTime zonedDateTime) {
+        return Timestamp.from(zonedDateTime.toInstant()).getTime();
+    }
+
+    public static ZonedDateTime getZonedDateTimeFromMillisTime(long millisTime) {
+        return getZonedDateTimeFromMillisTime(millisTime, DEFAULT_ZONE_ID);
+    }
+
+    public static ZonedDateTime getZonedDateTimeFromMillisTime(long millisTime, String zoneId) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(millisTime), ZoneId.of(zoneId));
     }
 
     private static BiFunction<ZonedDateTime, Integer, ZonedDateTime> addYears() {
