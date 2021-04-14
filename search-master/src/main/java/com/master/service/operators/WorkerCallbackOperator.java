@@ -47,6 +47,7 @@ public abstract class WorkerCallbackOperator extends BaseCacheAbleService<QueryR
     protected List<SortItem> doParseResult(QueryRequest request, Map<String, Object> queryResultMap) {
         JSONArray array = (JSONArray) queryResultMap.getOrDefault(resultDataKey(), new JSONArray());
         List<SortItem> list = JSONArray.parseArray(JSONArray.toJSONString(array), SortItem.class);
+        log.info("Handler [{}] got {} data", operatorName(), list.size());
         return list.parallelStream()
                 .peek(sortItem -> sortItem.setDataType(dataType()))
                 .collect(Collectors.toList());
