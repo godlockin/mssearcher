@@ -35,7 +35,7 @@ public class EarningCallbackOperator extends WorkerCallbackOperator {
     private String RESULT_DATA_KEY;
     @Value("${EARNING_CALLBACK_SS_CODE:1}")
     private String SS_CODE;
-    @Value("${EARNING_CALLBACK_SS_CODE:code}")
+    @Value("${EARNING_CALLBACK_SS_CODE_KEY:code}")
     private String SS_CODE_KEY;
 
     @Value("${EARNING_CALLBACK_CACHE_TYPE:REDIS}")
