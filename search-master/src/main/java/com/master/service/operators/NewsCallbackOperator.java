@@ -79,6 +79,7 @@ public class NewsCallbackOperator extends WorkerCallbackOperator {
     private Cache<String, List<DocItem>> localCache;
     private Cache<String, List<DocItem>> redisCache;
 
+    @Override
     @PostConstruct
     protected void init() {
         super.init();

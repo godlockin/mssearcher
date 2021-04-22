@@ -1,7 +1,9 @@
 package com.news.common;
 
 import com.common.constants.Constants;
+import com.common.constants.ResultEnum;
 import com.common.utils.DateUtils;
+import com.exception.MsWorkerException;
 import com.model.DocItem;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,9 @@ import java.util.Map;
 
 @Component
 public class NewsUtils {
+    private NewsUtils() {
+        throw new MsWorkerException(ResultEnum.ILLEGAL_METHOD);
+    }
 
     public static boolean esDataJudgement(double defaultScore, Map<String, Object> map) {
         if (CollectionUtils.isEmpty(map)) {

@@ -18,7 +18,6 @@ public interface CommonInterface<T, R> {
      * register the operator into cache:
      * # save the config into SysConfigUtil
      * # save the confidence for each operator into OperatorConfigCache
-     * TODO the OperatorConfigCache can take more responsibility
      * @return operator instance itself
      */
     default CommonInterface operatorRegister() {

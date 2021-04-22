@@ -1,12 +1,13 @@
 package com.common.utils;
 
 public class XXHash {
-    private final static long PRIME64_1 = 0x9E3779B185EBCA87L;
-    private final static long PRIME64_2 = 0xC2B2AE3D27D4EB4FL;
-    private final static long PRIME64_3 = 0x165667B19E3779F9L;
-    private final static long PRIME64_4 = 0x85EBCA77C2b2AE63L;
-    private final static long PRIME64_5 = 0x27D4EB2F165667C5L;
-    private final static long DEFAULT_SEED = 0;
+    private XXHash() {}
+    private static final long PRIME64_1 = 0x9E3779B185EBCA87L;
+    private static final long PRIME64_2 = 0xC2B2AE3D27D4EB4FL;
+    private static final long PRIME64_3 = 0x165667B19E3779F9L;
+    private static final long PRIME64_4 = 0x85EBCA77C2b2AE63L;
+    private static final long PRIME64_5 = 0x27D4EB2F165667C5L;
+    private static final long DEFAULT_SEED = 0;
 
     /**
      * XXHash 64-bit variant.
@@ -34,7 +35,7 @@ public class XXHash {
             long v2 = seed + PRIME64_2;
             long v3 = seed + 0;
             long v4 = seed - PRIME64_1;
-            long limit = length - 32;
+            long limit = (long) length - 32;
             do {
                 long k1 = ((long) data[index] & 0xff)
                         | (((long) data[index + 1] & 0xff) << 8)
@@ -99,7 +100,7 @@ public class XXHash {
             int tailStart = index;
             long k = 0;
             int remaining = length - index;
-            remaining = remaining > 8 ? 8 : remaining;
+            remaining = Math.min(remaining, 8);
             switch (remaining) {
                 case 8:
                     k |= (long) (data[tailStart + 7] & 0xff) << 56;
@@ -117,6 +118,7 @@ public class XXHash {
                     k |= (long) (data[tailStart + 1] & 0xff) << 8;
                 case 1:
                     k |= (long) (data[tailStart] & 0xff);
+                default:
             }
             hash = updateTail(hash, k);
             index += 8;
@@ -126,7 +128,7 @@ public class XXHash {
             int tailStart = index;
             int k = 0;
             int remaining = length - index;
-            remaining = remaining > 4 ? 4 : remaining;
+            remaining = Math.min(remaining, 4);
             switch (remaining) {
                 case 4:
                     k |= (long) (data[tailStart + 3] & 0xff) << 24;
@@ -136,6 +138,7 @@ public class XXHash {
                     k |= (long) (data[tailStart + 1] & 0xff) << 8;
                 case 1:
                     k |= (long) (data[tailStart] & 0xff);
+                default:
             }
             hash = updateTail(hash, k);
             index += 4;

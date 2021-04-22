@@ -1,10 +1,15 @@
 package com.common.utils;
 
+import com.common.constants.ResultEnum;
+import com.exception.MsWorkerException;
+
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class MurmurHash {
+    private MurmurHash() {
+        throw new MsWorkerException(ResultEnum.ILLEGAL_METHOD);
+    }
 
     public static long hash64(String doc) {
         byte[] buffer = doc.getBytes(StandardCharsets.UTF_8);
@@ -60,6 +65,7 @@ public class MurmurHash {
             case 1:
                 h64 ^= (long) key.get(offset + length - rem);
                 h64 *= m64;
+            default:
         }
 
         h64 ^= h64 >>> r64;

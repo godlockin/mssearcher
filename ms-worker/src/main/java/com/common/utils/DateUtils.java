@@ -139,7 +139,7 @@ public class DateUtils {
     }
 
     private static String getFormattedZonedDateTimeFromTimestamp(long timestamp, String zoneId) {
-        return getFormattedZonedDateTimeFromTimestamp(timestamp, DEFAULT_ZONE_ID, DEFAULT_DATE_FORMAT);
+        return getFormattedZonedDateTimeFromTimestamp(timestamp, zoneId, DEFAULT_DATE_FORMAT);
     }
 
     private static String getFormattedZonedDateTimeFromTimestamp(long timestamp, String zoneId, String dateFormat) {

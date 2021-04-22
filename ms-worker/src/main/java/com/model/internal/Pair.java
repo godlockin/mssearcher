@@ -25,14 +25,6 @@ public class Pair<A, B> {
         return b;
     }
 
-    public A getLeft() {
-        return a;
-    }
-
-    public B getRight() {
-        return b;
-    }
-
     @Override
     public String toString() {
         return String.format("[%s]:[%s], [%s]:[%s]"

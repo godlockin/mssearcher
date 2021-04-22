@@ -28,6 +28,10 @@ public class RestHttpClient {
 
     private static CloseableHttpClient closeableHttpClient;
 
+    private RestHttpClient() {
+        throw new MsWorkerException(ResultEnum.ILLEGAL_METHOD);
+    }
+
     public RestHttpClient(@Qualifier("closeableHttpClient") CloseableHttpClient client) {
         closeableHttpClient = client;
     }

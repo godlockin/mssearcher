@@ -1,5 +1,7 @@
 package com.common.utils;
 
+import com.common.constants.ResultEnum;
+import com.exception.MsWorkerException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -10,7 +12,11 @@ import java.security.MessageDigest;
 @Component
 public class GuidService {
 
-    private final static String[] hexDigits = {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"};
+    private GuidService() {
+        throw new MsWorkerException(ResultEnum.ILLEGAL_METHOD);
+    }
+
+    private static final String[] hexDigits = {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"};
     private static MessageDigest md5;
 
     static {
@@ -18,11 +24,10 @@ public class GuidService {
             md5 = MessageDigest.getInstance("MD5");
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("Error happened when we load MD5 method" + e);
         }
     }
 
-    synchronized public static String getGuid(String base, String prefix, boolean isTimeSensitive) {
+     public static synchronized String getGuid(String base, String prefix, boolean isTimeSensitive) {
 
         String baseStr = base + ((isTimeSensitive) ? System.currentTimeMillis() : "");
         String trgt = getMd5(baseStr);

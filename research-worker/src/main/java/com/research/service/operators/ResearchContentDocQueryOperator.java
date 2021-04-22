@@ -24,7 +24,7 @@ public class ResearchContentDocQueryOperator extends WorkerDocQueryOperator {
     private boolean OPERATOR_ACTIVE;
 
     @Value("${RESEARCH_CONTENT_DOC_QUERY_CONFIDENCE:0.2}")
-    protected double CONFIDENCE;
+    private double CONFIDENCE;
     @Value("${RESEARCH_CONTENT_DOC_QUERY_DATA_TYPE:content}")
     private String DATA_TYPE;
 
@@ -32,16 +32,16 @@ public class ResearchContentDocQueryOperator extends WorkerDocQueryOperator {
     private int TIMEOUT;
 
     @Value("${RESEARCH_CONTENT_DOC_QUERY_CACHE_TYPE:REDIS}")
-    protected String CACHE_TYPE;
+    private String CACHE_TYPE;
 
     @Value("${RESEARCH_CONTENT_DOC_QUERY_ES_ADDRESS:localhost:9200}")
-    protected String ES_ADDRESS;
+    private String ES_ADDRESS;
     @Value("${RESEARCH_CONTENT_DOC_QUERY_ES_USERNAME:}")
-    protected String ES_USERNAME;
+    private String ES_USERNAME;
     @Value("${RESEARCH_CONTENT_DOC_QUERY_ES_PASSWORD:}")
-    protected String ES_PASSWORD;
+    private String ES_PASSWORD;
     @Value("${RESEARCH_CONTENT_DOC_QUERY_ES_INDEX:}")
-    protected String ES_INDEX;
+    private String ES_INDEX;
 
     @Value("${RESEARCH_CONTENT_DOC_QUERY_DECAY_TYPE:SIGMOID}")
     private String DECAY_TYPE;
@@ -52,6 +52,7 @@ public class ResearchContentDocQueryOperator extends WorkerDocQueryOperator {
     private Cache<String, List<DocItem>> localCache;
     private Cache<String, List<DocItem>> redisCache;
 
+    @Override
     @PostConstruct
     protected void init() {
         super.init();

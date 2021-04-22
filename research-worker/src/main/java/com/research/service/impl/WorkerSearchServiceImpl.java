@@ -1,11 +1,10 @@
 package com.research.service.impl;
 
-import com.github.benmanes.caffeine.cache.Cache;
 import com.common.SysConfigUtil;
+import com.github.benmanes.caffeine.cache.Cache;
 import com.model.DocItem;
-import com.model.SortItem;
-import com.service.WorkerSearchServiceInterface;
 import com.service.WorkerQuServiceInterface;
+import com.service.WorkerSearchServiceInterface;
 import com.service.worker.AbstractWorkerSearchService;
 import com.service.worker.operators.WorkerSearchOperator;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +69,7 @@ public class WorkerSearchServiceImpl extends AbstractWorkerSearchService impleme
     @Override
     protected WorkerQuServiceInterface quService() { return this.quService; }
 
+    @Override
     @PostConstruct
     protected void init() {
         super.init();

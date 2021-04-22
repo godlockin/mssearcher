@@ -139,7 +139,6 @@ public class RestTemplateConfig {
                 .setSocketTimeout(socketTimeout)
                 .setConnectTimeout(connectTimeout)
                 .setConnectionRequestTimeout(connectionRequestTimeout)
-                .setStaleConnectionCheckEnabled(staleConnectionCheckEnabled)
                 ;
     }
 

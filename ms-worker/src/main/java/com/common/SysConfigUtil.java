@@ -1,8 +1,10 @@
 package com.common;
 
 
+import com.common.constants.ResultEnum;
 import com.common.utils.DataUtils;
 import com.common.utils.ExtraCollectionUtils;
+import com.exception.MsWorkerException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class SysConfigUtil {
+    private SysConfigUtil() {
+        throw new MsWorkerException(ResultEnum.ILLEGAL_METHOD);
+    }
 
     private static ConcurrentHashMap<String, Object> config = new ConcurrentHashMap<>();
 

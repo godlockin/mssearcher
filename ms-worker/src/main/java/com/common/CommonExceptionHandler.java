@@ -29,19 +29,21 @@ public class CommonExceptionHandler {
         log.error("Error happened on url:[{}]", request.getRequestURI());
 
         ResponseEntity.BodyBuilder bodyBuilder = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-        Response wrapper = Response.failure(e.getMessage());
+        Response<T> wrapper = Response.failure(e.getMessage());
+
+        String illegalParam = "参数校验失败：";
         if (e instanceof MethodArgumentNotValidException) {
             MethodArgumentNotValidException me = (MethodArgumentNotValidException) e;
             String errMsg = buildErrMsgByBindingError(me.getBindingResult().getAllErrors());
-            wrapper = Response.failure("参数校验失败：" + errMsg);
+            wrapper = Response.failure(illegalParam + errMsg);
         } else if (e instanceof IllegalArgumentException) {
             IllegalArgumentException ie = (IllegalArgumentException) e;
             String errMsg = String.format("[%s]", ie.getLocalizedMessage());
-            wrapper = Response.failure("参数校验失败：" + errMsg);
+            wrapper = Response.failure(illegalParam + errMsg);
         } else if (e instanceof BindException) {
             BindException be = (BindException) e;
             String errMsg = buildErrMsgByBindingError(be.getAllErrors());
-            wrapper = Response.failure("参数校验失败：" + errMsg);
+            wrapper = Response.failure(illegalParam + errMsg);
         } else if (e instanceof HttpMessageNotReadableException) {
             wrapper = Response.failure("参数校验失败：requestBody 不存在");
         }

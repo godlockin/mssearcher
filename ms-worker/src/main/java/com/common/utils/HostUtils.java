@@ -1,5 +1,7 @@
 package com.common.utils;
 
+import com.common.constants.ResultEnum;
+import com.exception.MsWorkerException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,9 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class HostUtils {
+    private HostUtils() {
+        throw new MsWorkerException(ResultEnum.ILLEGAL_METHOD);
+    }
 
     private static String ip;
     private static String hostName;

@@ -38,6 +38,7 @@ public class SearchMasterImpl extends BaseService<QueryRequest, QueryResult> imp
     @Autowired
     private SearchService searchService;
 
+    @Override
     public QueryResult defaultResult() {
         return new QueryResult();
     }
@@ -71,6 +72,7 @@ public class SearchMasterImpl extends BaseService<QueryRequest, QueryResult> imp
                 .build();
     }
 
+    @Override
     @PostConstruct
     protected void init() {
         super.init();

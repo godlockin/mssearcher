@@ -169,6 +169,7 @@ public abstract class AbstractWorkerSearchService extends AbstractWorkerCacheAbl
                 .collect(Collectors.groupingByConcurrent(DocItem::getBundleKey));
     }
 
+    @Override
     protected Predicate<String> redisCachePredicate() {
         return content -> StringUtils.isNotBlank(content) && JSONValidator.from(content).validate();
     }

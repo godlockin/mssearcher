@@ -25,13 +25,21 @@ public class LogAspect {
     private List<String> IGNORE_URL = Arrays.asList("/", "/health");
 
     @Pointcut("execution(public * com.master.controller.*.*(..))")
-    public void logic() {}
+    public void logic() {
+        // used for aspect all functions in controller
+    }
 
     @Before("logic()")
     public void doBeforeLogic(JoinPoint joinPoint) {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
 
+        Optional<HttpServletRequest> optional = Optional.ofNullable(RequestContextHolder.getRequestAttributes())
+                .map(ServletRequestAttributes.class::cast)
+                .map(ServletRequestAttributes::getRequest);
+        if (!optional.isPresent()) {
+            return;
+        }
+
+        HttpServletRequest request = optional.get();
         if (IGNORE_URL.contains(request.getRequestURI())) {
             return;
         }
@@ -47,9 +55,15 @@ public class LogAspect {
 
     @AfterReturning(returning = "object", pointcut = "logic()")
     public void doAfterLogic(Object object) {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
 
+        Optional<HttpServletRequest> optional = Optional.ofNullable(RequestContextHolder.getRequestAttributes())
+                .map(ServletRequestAttributes.class::cast)
+                .map(ServletRequestAttributes::getRequest);
+        if (!optional.isPresent()) {
+            return;
+        }
+
+        HttpServletRequest request = optional.get();
         if (IGNORE_URL.contains(request.getRequestURI())) {
             return;
         }
@@ -63,7 +77,9 @@ public class LogAspect {
     }
 
     @Pointcut("execution(* com.*.*(..))")
-    public void everyLogic() {}
+    public void everyLogic() {
+        // used for all methods for whole service
+    }
 
     @Around("everyLogic()")
     public Object doAroundEveryLogic(ProceedingJoinPoint pjp) throws Throwable {
@@ -76,15 +92,12 @@ public class LogAspect {
                 , Optional.ofNullable(signature.getDeclaringTypeName()).orElse("")
                 , Optional.ofNullable(signature.getName()).orElse("")
                 , (end - start) / 1_000_000
-                );
+        );
 
         return result;
     }
 
-    @Pointcut("execution(public * com.master.service.impl.*Service*.*(..))")
-    public void queryHandler() {}
-
-    @Around("queryHandler()")
+    @Around("execution(public * com.master.service.impl.*Service*.*(..))")
     public Object doAroundQueryHandler(ProceedingJoinPoint pjp) throws Throwable {
         long start = System.nanoTime();
         Object result = pjp.proceed();

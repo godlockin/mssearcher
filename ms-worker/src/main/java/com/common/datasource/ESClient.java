@@ -256,16 +256,16 @@ public class ESClient {
             return 0L;
         }
 
-        CountRequest request = new CountRequest().indices(trgtIndex).source(sourceBuilder);
+        CountRequest request = new CountRequest().indices(trgtIndex).query(sourceBuilder.query());
         try {
-            log.info("Try to query [{}] at:[{}] with request:[{}]", trgtIndex, System.currentTimeMillis(), request.source().toString());
+            log.info("Try to query [{}] at:[{}] with request:[{}]", trgtIndex, System.currentTimeMillis(), request.query().toString());
             CountResponse response = restHighLevelClient.count(request, COMMON_OPTIONS);
             long count = response.getCount();
-            log.info("Found {} data in index:[{}] by query:[{}]", count,trgtIndex, request.source().toString());
+            log.info("Found {} data in index:[{}] by query:[{}]", count,trgtIndex, request.query().toString());
             return count;
         } catch (Exception e) {
             e.printStackTrace();
-            String errMsg = String.format("Error happened when we try to query ES by:[%s], %s", request.source().toString(), e);
+            String errMsg = String.format("Error happened when we try to query ES by:[%s], %s", request.query().toString(), e);
             log.error(errMsg);
             throw new MsWorkerException(ResultEnum.ES_QUERY, errMsg);
         }
@@ -376,9 +376,9 @@ public class ESClient {
             termsAgg.size(size);
         }
 
-        int shard_size = DataUtils.getNotNullValue(param, ESConfig.SHARD_SIZE_KEY, Integer.class, 0);
-        if (0 < shard_size) {
-            termsAgg.shardSize(shard_size);
+        int shardSize = DataUtils.getNotNullValue(param, ESConfig.SHARD_SIZE_KEY, Integer.class, 0);
+        if (0 < shardSize) {
+            termsAgg.shardSize(shardSize);
         }
 
         long minDocCount = DataUtils.getNotNullValue(param, ESConfig.MIN_DOC_COUNT_KEY, Integer.class, 0).longValue();

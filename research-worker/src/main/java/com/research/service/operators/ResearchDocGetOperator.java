@@ -30,16 +30,16 @@ public class ResearchDocGetOperator extends WorkerDocGetOperator {
     private int TIMEOUT;
 
     @Value("${RESEARCH_DOC_GET_CACHE_TYPE:REDIS}")
-    protected String CACHE_TYPE;
+    private String CACHE_TYPE;
 
     @Value("${RESEARCH_DOC_GET_ES_ADDRESS:localhost:9200}")
-    protected String ES_ADDRESS;
+    private String ES_ADDRESS;
     @Value("${RESEARCH_DOC_GET_ES_USERNAME:}")
-    protected String ES_USERNAME;
+    private String ES_USERNAME;
     @Value("${RESEARCH_DOC_GET_ES_PASSWORD:}")
-    protected String ES_PASSWORD;
+    private String ES_PASSWORD;
     @Value("${RESEARCH_DOC_GET_ES_INDEX:}")
-    protected String ES_INDEX;
+    private String ES_INDEX;
 
     @Value("${RESEARCH_DOC_GET_DECAY_TYPE:SIGMOID}")
     private String DECAY_TYPE;
@@ -50,6 +50,7 @@ public class ResearchDocGetOperator extends WorkerDocGetOperator {
     private Cache<String, List<DocItem>> localCache;
     private Cache<String, List<DocItem>> redisCache;
 
+    @Override
     @PostConstruct
     protected void init() {
         super.init();

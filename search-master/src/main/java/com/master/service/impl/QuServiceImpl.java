@@ -149,18 +149,20 @@ public class QuServiceImpl extends BaseCacheAbleService<CoreQuery, QueryRequest>
         return doRemoteDataQuery(query, param);
     }
 
+    @Override
     protected boolean isLegalRemoteResult(Map<String, Object> remoteResultMap) {
-        List<List> targetItemLists = targetItemsKey().stream()
+        List<List<?>> targetItemLists = targetItemsKey().stream()
                 .map(remoteResultMap::get)
                 .filter(ObjectUtils::isNotEmpty)
                 .filter(o -> o instanceof List)
-                .map(o -> (List) o)
+                .map(List.class::cast)
                 .filter(ExtraCollectionUtils::isNotEmpty)
                 .collect(Collectors.toList());
         return super.isLegalRemoteResult(remoteResultMap) &&
                 ExtraCollectionUtils.isNoneEmpty(targetItemLists);
     }
 
+    @Override
     protected Map<String, Object> parseRemoteResult(Map<String, Object> remoteResultMap) {
         return remoteResultMap;
     }
@@ -249,7 +251,7 @@ public class QuServiceImpl extends BaseCacheAbleService<CoreQuery, QueryRequest>
 
     private BiConsumer<WorkerCoreQuery, Map<String, Object>> personConsumer() {
         return (coreQuery, map) -> {
-            List<Map<String, Object>> list = (List<Map<String, Object>>) map.getOrDefault("pm_project", new ArrayList<>());
+            List<Map<String, Object>> list = (List<Map<String, Object>>) map.getOrDefault("person", new ArrayList<>());
             List<PersonInfo> personList = list.stream()
                     .map(item -> {
                                 int id = (Integer) item.getOrDefault("id", -1);
@@ -268,7 +270,7 @@ public class QuServiceImpl extends BaseCacheAbleService<CoreQuery, QueryRequest>
 
     private BiConsumer<WorkerCoreQuery, Map<String, Object>> orgConsumer() {
         return (coreQuery, map) -> {
-            List<Map<String, Object>> list = (List<Map<String, Object>>) map.getOrDefault("pm_project", new ArrayList<>());
+            List<Map<String, Object>> list = (List<Map<String, Object>>) map.getOrDefault("pm_org", new ArrayList<>());
             List<OrgInfo> orgList = list.stream()
                     .map(item -> {
                                 int id = (Integer) item.getOrDefault("id", -1);
@@ -342,6 +344,7 @@ public class QuServiceImpl extends BaseCacheAbleService<CoreQuery, QueryRequest>
         return config;
     }
 
+    @Override
     @PostConstruct
     protected void init() {
         super.init();

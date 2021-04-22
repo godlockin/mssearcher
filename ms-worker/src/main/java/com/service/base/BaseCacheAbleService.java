@@ -119,7 +119,7 @@ public abstract class BaseCacheAbleService<T, R> extends BaseService<T, R> imple
 
     protected <T> Cache<String, T> buildLocalCache() {
         return Caffeine.newBuilder()
-                .expireAfterAccess(Long.valueOf(cacheExpireTime()), TimeUnit.SECONDS)
+                .expireAfterAccess(cacheExpireTime().longValue(), TimeUnit.SECONDS)
                 .initialCapacity(cacheCapacity())
                 .maximumSize(cacheMaxSize())
                 .build();
@@ -159,7 +159,7 @@ public abstract class BaseCacheAbleService<T, R> extends BaseService<T, R> imple
         RedisClient redisClient = RedisClientUtil.initClient(handlerKey(), buildRedisConfigBean());
         return new Cache<String, R>() {
 
-            private volatile CacheStats stats = CacheStats.empty();
+            private CacheStats stats = CacheStats.empty();
 
             @Nullable
             @Override
@@ -271,6 +271,7 @@ public abstract class BaseCacheAbleService<T, R> extends BaseService<T, R> imple
 
             @Override
             public void invalidateAll() {
+                throw new MsWorkerException(ResultEnum.ILLEGAL_METHOD);
             }
 
             @Override
@@ -325,6 +326,7 @@ public abstract class BaseCacheAbleService<T, R> extends BaseService<T, R> imple
         };
     }
 
+    @Override
     protected void init() {
         super.init();
         cacheInit();

@@ -38,16 +38,16 @@ public class EarningDocGetOperator extends WorkerDocGetOperator {
     private int TIMEOUT;
 
     @Value("${EARNING_DOC_GET_CACHE_TYPE:REDIS}")
-    protected String CACHE_TYPE;
+    private String CACHE_TYPE;
 
     @Value("${EARNING_DOC_GET_ES_ADDRESS:localhost:9200}")
-    protected String ES_ADDRESS;
+    private String ES_ADDRESS;
     @Value("${EARNING_DOC_GET_ES_USERNAME:}")
-    protected String ES_USERNAME;
+    private String ES_USERNAME;
     @Value("${EARNING_DOC_GET_ES_PASSWORD:}")
-    protected String ES_PASSWORD;
+    private String ES_PASSWORD;
     @Value("${EARNING_DOC_GET_ES_INDEX:}")
-    protected String ES_INDEX;
+    private String ES_INDEX;
 
     @Value("${EARNING_DOC_GET_DECAY_TYPE:HYPERBOLIC}")
     private String DECAY_TYPE;
@@ -58,6 +58,7 @@ public class EarningDocGetOperator extends WorkerDocGetOperator {
     private Cache<String, List<DocItem>> localCache;
     private Cache<String, List<DocItem>> redisCache;
 
+    @Override
     @PostConstruct
     protected void init() {
         super.init();
@@ -65,11 +66,13 @@ public class EarningDocGetOperator extends WorkerDocGetOperator {
         ESClientUtil.set(handlerKey(), esClient);
     }
 
+    @Override
     public boolean invalidatedParam(QueryRequest param) {
         return super.invalidatedParam(param)
                 || ExtraCollectionUtils.isAllEmpty(param.getCoreQuery().getStockList(), param.getCoreQuery().getProjectList());
     }
 
+    @Override
     protected DocItem docItemBuilder(Map<String, Object> map) {
         DocItem docItem = super.docItemBuilder(map);
         docItem.setFuncId((String) map.getOrDefault(ESConfig.ES_ID, ""));

@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public abstract class WorkerCallbackOperator extends BaseCacheAbleService<QueryRequest, List<SortItem>> {
 
+    @Override
     public List<SortItem> defaultResult() {
         return new ArrayList<>();
     }
@@ -34,11 +35,13 @@ public abstract class WorkerCallbackOperator extends BaseCacheAbleService<QueryR
         return doRemoteDataQuery(request, param);
     }
 
+    @Override
     protected boolean isLegalRemoteResult(Map<String, Object> remoteResultMap) {
         return super.isLegalRemoteResult(remoteResultMap) &&
                 ExtraCollectionUtils.isNotEmpty((List<Map<String, Object>>) remoteResultMap.getOrDefault(resultDataKey(), new ArrayList<>()));
     }
 
+    @Override
     protected Map<String, Object> parseRemoteResult(Map<String, Object> remoteResultMap) {
         return remoteResultMap;
     }

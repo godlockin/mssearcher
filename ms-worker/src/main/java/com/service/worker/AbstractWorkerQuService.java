@@ -105,6 +105,7 @@ public abstract class AbstractWorkerQuService extends AbstractWorkerCacheAbleSer
         );
     }
 
+    @Override
     public QueryConfig defaultResult() {
         return QueryConfig.builder()
                 .globalRate(confidence())

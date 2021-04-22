@@ -1,9 +1,14 @@
 package com.common.constants;
 
+import com.exception.MsWorkerException;
+
 import java.util.Arrays;
 import java.util.List;
 
 public class Constants {
+    private Constants() {
+        throw new MsWorkerException(ResultEnum.ILLEGAL_METHOD);
+    }
 
     public static class SysConfig {
         private SysConfig() {}

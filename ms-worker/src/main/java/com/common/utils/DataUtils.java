@@ -1,5 +1,7 @@
 package com.common.utils;
 
+import com.common.constants.ResultEnum;
+import com.exception.MsWorkerException;
 import com.google.common.base.CharMatcher;
 import com.common.constants.Constants.SysConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,10 @@ import java.util.function.BiConsumer;
 
 @Slf4j
 public class DataUtils {
+
+    private DataUtils() {
+        throw new MsWorkerException(ResultEnum.ILLEGAL_METHOD);
+    }
 
     public static String buildKey(String first, String second) {
         return buildKey(first, second, SysConfig.KEY_POSITION);

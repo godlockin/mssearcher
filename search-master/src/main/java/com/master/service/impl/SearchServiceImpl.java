@@ -115,10 +115,12 @@ public class SearchServiceImpl extends BaseCacheAbleService<QueryRequest, List<S
         return this.redisCache;
     }
 
+    @Override
     public List<SortItem> defaultResult() {
         return new ArrayList<>();
     }
 
+    @Override
     public boolean invalidatedParam(QueryRequest queryRequest) {
         return super.invalidatedParam(queryRequest)
                 || ObjectUtils.isEmpty(queryRequest.getCoreQuery())
@@ -127,6 +129,7 @@ public class SearchServiceImpl extends BaseCacheAbleService<QueryRequest, List<S
                 || 0 >= queryRequest.getCoreQuery().getPageSize();
     }
 
+    @Override
     public String cacheKey(QueryRequest queryRequest) {
         WorkerCoreQuery coreQuery = queryRequest.getCoreQuery();
         List<String> keyItems = new ArrayList<>(coreQuery.getDataSources());
@@ -199,6 +202,7 @@ public class SearchServiceImpl extends BaseCacheAbleService<QueryRequest, List<S
         return docList;
     }
 
+    @Override
     protected Predicate<String> redisCachePredicate() {
         return content -> StringUtils.isNotBlank(content) && JSONValidator.from(content).validate();
     }
@@ -218,6 +222,7 @@ public class SearchServiceImpl extends BaseCacheAbleService<QueryRequest, List<S
         return JSONArray::toJSONString;
     }
 
+    @Override
     @PostConstruct
     protected void init() {
         super.init();

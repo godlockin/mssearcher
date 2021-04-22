@@ -109,7 +109,7 @@ public class WorkerSearchServiceImpl extends AbstractWorkerSearchService impleme
                 .map(jsonArray -> jsonArray
                         .stream()
                         .filter(o -> o instanceof JSONObject)
-                        .map(o -> (JSONObject) o)
+                        .map(JSONObject.class::cast)
                         .filter(ExtraCollectionUtils::isNotEmpty)
                         .collect(Collectors.toList()));
         if (!optionalList.isPresent()) {
@@ -250,6 +250,7 @@ public class WorkerSearchServiceImpl extends AbstractWorkerSearchService impleme
         return this.quService;
     }
 
+    @Override
     @PostConstruct
     protected void init() {
         super.init();

@@ -1,5 +1,7 @@
 package com.common;
 
+import com.common.constants.ResultEnum;
+import com.exception.MsWorkerException;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -8,6 +10,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class OperatorConfigCache {
+    private OperatorConfigCache() {
+        throw new MsWorkerException(ResultEnum.ILLEGAL_METHOD);
+    }
+
     private static ConcurrentHashMap<String, Double> cache = new ConcurrentHashMap<>();
 
     public static void add(String operator, Double confidence) {

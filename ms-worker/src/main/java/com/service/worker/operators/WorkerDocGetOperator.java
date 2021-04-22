@@ -129,9 +129,11 @@ public abstract class WorkerDocGetOperator extends WorkerSearchOperator {
         return SysConfigUtil.getAsDouble("DEFAULT_SCORE", DEFAULT_SCORE);
     }
 
+    @Override
     protected BiFunction<QueryRequest, Map<String, Object>, Boolean> esDataFilter() {
         return (queryRequest, map) -> {
-            if (!super.esDataFilter().apply(queryRequest, map)) {
+            boolean filterResult = super.esDataFilter().apply(queryRequest, map);
+            if (!filterResult) {
                 return false;
             }
 

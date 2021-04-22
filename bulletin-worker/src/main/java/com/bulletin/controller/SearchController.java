@@ -8,9 +8,9 @@ import com.service.WorkerSearchServiceInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class SearchController {
     @Autowired
     private WorkerSearchServiceInterface searchService;
 
-    @RequestMapping(value = { "/search" }, method = RequestMethod.POST)
+    @PostMapping(value = { "/search" })
     public ResponseEntity<Response<List<SortItem>>> dataSearch(@RequestBody WorkerCoreQuery coreQuery) {
         QueryRequest queryRequest = QueryRequest.builder().coreQuery(coreQuery).build();
         return ResponseEntity.ok(Response.success(searchService.handle(queryRequest)));

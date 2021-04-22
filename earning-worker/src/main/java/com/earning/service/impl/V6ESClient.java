@@ -31,6 +31,7 @@ public class V6ESClient extends ESClient {
         super(initConfig);
     }
 
+    @Override
     protected Map<String, Object> buildResult(SearchResponse response) {
         SearchHits hits = response.getHits();
         long total = hits.getTotalHits();

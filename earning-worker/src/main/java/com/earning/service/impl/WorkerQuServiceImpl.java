@@ -19,6 +19,7 @@ public class WorkerQuServiceImpl extends AbstractWorkerQuService implements Work
     @Value("${SEARCH_WORKER_QU_TIMEOUT:2000}")
     private int TIMEOUT;
 
+    @Override
     @PostConstruct
     protected void init() {
         super.init();

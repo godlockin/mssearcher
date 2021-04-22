@@ -147,6 +147,7 @@ public abstract class WorkerDocQueryOperator extends WorkerSearchOperator {
         return SysConfigUtil.getAsDouble("DEFAULT_SCORE", DEFAULT_SCORE);
     }
 
+    @Override
     protected DocItem docItemBuilder(Map<String, Object> map) {
         DocItem docItem = super.docItemBuilder(map);
         docItem.setFuncId((String) map.getOrDefault("id", ""));

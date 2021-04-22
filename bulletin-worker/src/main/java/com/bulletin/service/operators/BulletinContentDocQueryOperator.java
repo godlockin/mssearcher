@@ -32,7 +32,7 @@ public class BulletinContentDocQueryOperator extends WorkerDocQueryOperator {
     private boolean OPERATOR_ACTIVE;
 
     @Value("${BULLETIN_CONTENT_DOC_QUERY_CONFIDENCE:0.2}")
-    protected double CONFIDENCE;
+    private double CONFIDENCE;
     @Value("${BULLETIN_CONTENT_DOC_QUERY_DATA_TYPE:content}")
     private String DATA_TYPE;
 
@@ -40,16 +40,16 @@ public class BulletinContentDocQueryOperator extends WorkerDocQueryOperator {
     private int TIMEOUT;
 
     @Value("${BULLETIN_CONTENT_DOC_QUERY_CACHE_TYPE:REDIS}")
-    protected String CACHE_TYPE;
+    private String CACHE_TYPE;
 
     @Value("${BULLETIN_CONTENT_DOC_QUERY_ES_ADDRESS:localhost:9200}")
-    protected String ES_ADDRESS;
+    private String ES_ADDRESS;
     @Value("${BULLETIN_CONTENT_DOC_QUERY_ES_USERNAME:}")
-    protected String ES_USERNAME;
+    private String ES_USERNAME;
     @Value("${BULLETIN_CONTENT_DOC_QUERY_ES_PASSWORD:}")
-    protected String ES_PASSWORD;
+    private String ES_PASSWORD;
     @Value("${BULLETIN_CONTENT_DOC_QUERY_ES_INDEX:}")
-    protected String ES_INDEX;
+    private String ES_INDEX;
 
     @Value("${BULLETIN_CONTENT_DOC_QUERY_DECAY_TYPE:HYPERBOLIC}")
     private String DECAY_TYPE;
@@ -60,6 +60,7 @@ public class BulletinContentDocQueryOperator extends WorkerDocQueryOperator {
     private Cache<String, List<DocItem>> localCache;
     private Cache<String, List<DocItem>> redisCache;
 
+    @Override
     @PostConstruct
     protected void init() {
         super.init();
@@ -67,11 +68,13 @@ public class BulletinContentDocQueryOperator extends WorkerDocQueryOperator {
         ESClientUtil.set(handlerKey(), esClient);
     }
 
+    @Override
     public boolean invalidatedParam(QueryRequest param) {
         return super.invalidatedParam(param)
                 || ExtraCollectionUtils.isAllEmpty(param.getCoreQuery().getStockList(), param.getCoreQuery().getProjectList());
     }
 
+    @Override
     protected DocItem docItemBuilder(Map<String, Object> map) {
         DocItem docItem = super.docItemBuilder(map);
         docItem.setFuncId((String) map.getOrDefault(ESConfig.ES_ID, ""));

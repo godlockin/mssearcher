@@ -17,8 +17,10 @@ import java.util.Optional;
 @Service
 public abstract class AbstractWorkerCacheAbleService<T, R> extends BaseCacheAbleService<T, R> implements CacheAbleCommonInterface<T, R> {
 
+    @Override
     public R defaultResult() { return (R) new ArrayList<>(); }
 
+    @Override
     public boolean invalidatedParam(T param) {
         if (super.invalidatedParam(param)) {
             return true;
@@ -26,7 +28,7 @@ public abstract class AbstractWorkerCacheAbleService<T, R> extends BaseCacheAble
 
         WorkerCoreQuery coreQuery = new WorkerCoreQuery();
         if (param instanceof QueryRequest) {
-            Optional<WorkerCoreQuery> opt = Optional.of(param).map(x -> (QueryRequest) x)
+            Optional<WorkerCoreQuery> opt = Optional.of(param).map(QueryRequest.class::cast)
                     .flatMap(x -> Optional.ofNullable(x.getCoreQuery()));
             if (!opt.isPresent()) {
                 return true;

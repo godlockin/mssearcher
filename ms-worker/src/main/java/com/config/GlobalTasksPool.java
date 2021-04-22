@@ -1,5 +1,7 @@
 package com.config;
 
+import com.common.constants.ResultEnum;
+import com.exception.MsWorkerException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
@@ -9,6 +11,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 @Component
 public class GlobalTasksPool {
+    private GlobalTasksPool() {
+        throw new MsWorkerException(ResultEnum.ILLEGAL_METHOD);
+    }
 
     private static ThreadPoolTaskExecutor executor;
     static {
@@ -20,7 +25,6 @@ public class GlobalTasksPool {
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.initialize();
-        log.info("GlobalTasksPool init");
     }
 
     public static ThreadPoolTaskExecutor getExecutor() { return executor; }

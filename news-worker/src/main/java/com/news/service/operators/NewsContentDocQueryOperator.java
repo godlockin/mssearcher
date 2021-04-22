@@ -31,7 +31,7 @@ public class NewsContentDocQueryOperator extends WorkerDocQueryOperator {
     private boolean OPERATOR_ACTIVE;
 
     @Value("${NEWS_CONTENT_DOC_QUERY_CONFIDENCE:0.2}")
-    protected double CONFIDENCE;
+    private double CONFIDENCE;
     @Value("${NEWS_CONTENT_DOC_QUERY_DATA_TYPE:content}")
     private String DATA_TYPE;
 
@@ -39,16 +39,16 @@ public class NewsContentDocQueryOperator extends WorkerDocQueryOperator {
     private int TIMEOUT;
 
     @Value("${NEWS_CONTENT_DOC_QUERY_CACHE_TYPE:REDIS}")
-    protected String CACHE_TYPE;
+    private String CACHE_TYPE;
 
     @Value("${NEWS_CONTENT_DOC_QUERY_ES_ADDRESS:localhost:9200}")
-    protected String ES_ADDRESS;
+    private String ES_ADDRESS;
     @Value("${NEWS_CONTENT_DOC_QUERY_ES_USERNAME:}")
-    protected String ES_USERNAME;
+    private String ES_USERNAME;
     @Value("${NEWS_CONTENT_DOC_QUERY_ES_PASSWORD:}")
-    protected String ES_PASSWORD;
+    private String ES_PASSWORD;
     @Value("${NEWS_CONTENT_DOC_QUERY_ES_INDEX:}")
-    protected String ES_INDEX;
+    private String ES_INDEX;
 
     @Value("${NEWS_CONTENT_DOC_QUERY_DECAY_TYPE:HYPERBOLIC}")
     private String DECAY_TYPE;
@@ -85,14 +85,17 @@ public class NewsContentDocQueryOperator extends WorkerDocQueryOperator {
         return query;
     }
 
+    @Override
     protected BiFunction<QueryRequest, Map<String, Object>, Boolean> esDataFilter() {
         return (queryRequest, map) -> NewsUtils.esDataJudgement(defaultScore(), map);
     }
 
+    @Override
     protected DocItem docItemBuilder(Map<String, Object> map) {
         return NewsUtils.docItemBuilder(dataType(), defaultScore(), map);
     }
 
+    @Override
     @PostConstruct
     protected void init() {
         super.init();
