@@ -151,7 +151,7 @@ public class QuServiceImpl extends BaseCacheAbleService<CoreQuery, QueryRequest>
 
     @Override
     protected boolean isLegalRemoteResult(Map<String, Object> remoteResultMap) {
-        List<List<?>> targetItemLists = targetItemsKey().stream()
+        List<List> targetItemLists = targetItemsKey().stream()
                 .map(remoteResultMap::get)
                 .filter(ObjectUtils::isNotEmpty)
                 .filter(o -> o instanceof List)
