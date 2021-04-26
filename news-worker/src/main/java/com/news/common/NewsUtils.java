@@ -11,7 +11,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Map;
 
-@Component
 public class NewsUtils {
     private NewsUtils() {
         throw new MsWorkerException(ResultEnum.ILLEGAL_METHOD);
