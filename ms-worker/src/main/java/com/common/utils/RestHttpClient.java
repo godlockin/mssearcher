@@ -21,7 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Slf4j
-@Component
 public class RestHttpClient {
 
     private static final RequestConfig requestConfig = RequestConfig.DEFAULT;

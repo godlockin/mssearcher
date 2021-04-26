@@ -4,12 +4,10 @@ import com.common.constants.ResultEnum;
 import com.exception.MsWorkerException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 
 import java.security.MessageDigest;
 
 @Slf4j
-@Component
 public class GuidService {
 
     private GuidService() {
