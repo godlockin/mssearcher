@@ -21,15 +21,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Slf4j
+@Component
 public class RestHttpClient {
 
     private static final RequestConfig requestConfig = RequestConfig.DEFAULT;
 
     private static CloseableHttpClient closeableHttpClient;
-
-    private RestHttpClient() {
-        throw new MsWorkerException(ResultEnum.ILLEGAL_METHOD);
-    }
 
     public RestHttpClient(@Qualifier("closeableHttpClient") CloseableHttpClient client) {
         closeableHttpClient = client;
